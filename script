@@ -1,80 +1,75 @@
 local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
 local humanoid = player.Character and player.Character:WaitForChild("Humanoid")
 
-local autoJumpEnabled = false -- Start with auto-jump off
-local runService = game:GetService("RunService")
+local autoJumpEnabled = false -- Toggle state
+local toggleKey = Enum.KeyCode.J -- Keybind for toggling
 
--- Create the UI
+-- Create UI
 local screenGui = Instance.new("ScreenGui")
-screenGui.Parent = playerGui
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
--- Main status label (draggable and clickable)
-local statusLabel = Instance.new("TextButton") -- Clickable button
+-- Credits label
+local creditsLabel = Instance.new("TextLabel")
+creditsLabel.Parent = screenGui
+creditsLabel.Size = UDim2.new(0, 200, 0, 30)
+creditsLabel.Position = UDim2.new(0.5, -100, 0) -- Positioned above the toggle UI
+creditsLabel.BackgroundTransparency = 1 -- No background
+creditsLabel.TextColor3 = Color3.fromRGB(180, 180, 180)
+creditsLabel.TextSize = 14
+creditsLabel.Font = Enum.Font.Gotham
+creditsLabel.Text = "Made by kevinivy100"
+
+-- Status label
+local statusLabel = Instance.new("TextLabel")
 statusLabel.Parent = screenGui
 statusLabel.Size = UDim2.new(0, 200, 0, 50)
-statusLabel.Position = UDim2.new(0.5, -100, 0.1, 0) -- Centered at the top
-statusLabel.BackgroundTransparency = 0.2
+statusLabel.Position = UDim2.new(0.5, -100, 0.05, 0)
 statusLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+statusLabel.BackgroundTransparency = 0.5 -- Always transparent for a sleek look
 statusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+statusLabel.TextSize = 18
 statusLabel.Font = Enum.Font.GothamBold
-statusLabel.TextSize = 24
-statusLabel.Text = "Bhop: OFF"
-statusLabel.Active = true -- Needed for dragging
-statusLabel.Draggable = true -- Allows dragging
+statusLabel.Text = "Auto-Jump: OFF"
+statusLabel.Visible = true
 
--- Credit label (parented to statusLabel)
-local creditLabel = Instance.new("TextLabel")
-creditLabel.Parent = statusLabel -- Sticks to the main UI
-creditLabel.Size = UDim2.new(1, 0, 0, 20) -- Same width as statusLabel, smaller height
-creditLabel.Position = UDim2.new(0, 0, 1, 5) -- Right below statusLabel
-creditLabel.BackgroundTransparency = 1 -- Fully transparent background
-creditLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
-creditLabel.Font = Enum.Font.Gotham
-creditLabel.TextSize = 12 -- Adjusted font size
-creditLabel.Text = "Made by kevinivy100"
-creditLabel.TextScaled = true -- Ensures proper scaling
-
--- Keybind indicator (non-draggable)
+-- Keybind label
 local keybindLabel = Instance.new("TextLabel")
 keybindLabel.Parent = screenGui
 keybindLabel.Size = UDim2.new(0, 200, 0, 30)
-keybindLabel.Position = UDim2.new(0.5, -100, 0.9, 0) -- Bottom center of the screen
-keybindLabel.BackgroundTransparency = 0.2
-keybindLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-keybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-keybindLabel.Font = Enum.Font.GothamBold
-keybindLabel.TextSize = 16
-keybindLabel.Text = "Press J to toggle Bhop"
-keybindLabel.TextScaled = true
+keybindLabel.Position = UDim2.new(0.5, -100, 0.12, 0) -- Positioned below the status label
+keybindLabel.BackgroundTransparency = 1 -- Always fully transparent
+keybindLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+keybindLabel.TextSize = 14
+keybindLabel.Font = Enum.Font.Gotham
+keybindLabel.Text = "Toggle Auto-Jump: [" .. toggleKey.Name .. "]"
+keybindLabel.Visible = true
 
--- Function to handle instant auto-jumping
+-- Function to make the character jump
 local function autoJump()
-    local connection
-    connection = runService.RenderStepped:Connect(function()
-        if autoJumpEnabled and humanoid then
+    while autoJumpEnabled do
+        wait(0) -- Adjust the time interval between jumps (in seconds)
+
+        if humanoid then
             humanoid.Jump = true
-        else
-            connection:Disconnect() -- Stop jumping when disabled
         end
-    end)
-end
-
--- Function to toggle auto-jump
-local function toggleAutoJump()
-    autoJumpEnabled = not autoJumpEnabled
-    statusLabel.Text = autoJumpEnabled and "Bhop: ON" or "Bhop: OFF"
-    statusLabel.BackgroundColor3 = autoJumpEnabled and Color3.fromRGB(50, 150, 50) or Color3.fromRGB(30, 30, 30)
-
-    if autoJumpEnabled then
-        autoJump()
     end
 end
 
--- Allow toggling with both UI click and "J" key
-statusLabel.MouseButton1Click:Connect(toggleAutoJump)
+-- Toggle auto-jump function
+local function toggleAutoJump()
+    autoJumpEnabled = not autoJumpEnabled
+
+    if autoJumpEnabled then
+        statusLabel.Text = "Auto-Jump: ON"
+        autoJump()
+    else
+        statusLabel.Text = "Auto-Jump: OFF"
+    end
+end
+
+-- Detect key press
 game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.J then
+    if not gameProcessed and input.KeyCode == toggleKey then
         toggleAutoJump()
     end
 end)
