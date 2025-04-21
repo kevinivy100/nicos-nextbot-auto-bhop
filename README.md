@@ -1,1 +1,1 @@
-ever got fucking tired of fucking spammin that space bar till its fuckin broken? i gotchu fam, this script ensures no more destroying that space bar and you can have a pain free experience.
+ever got fucking tired of fucking spammin that space bar till its fuckin broken? i gotchu fam, this script ensures no more destroying that space bar and you can have a pain free experience. i recommend having high fps for this, if you have potato pc then turn down your settings or it wont be as effective.
