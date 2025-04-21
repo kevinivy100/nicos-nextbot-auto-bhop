@@ -2,42 +2,44 @@ local player = game.Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local humanoid = player.Character and player.Character:WaitForChild("Humanoid")
 
-local autoJumpEnabled = false 
+local autoJumpEnabled = false -- Start with auto-jump off
 local runService = game:GetService("RunService")
 
+-- Create the UI
 local screenGui = Instance.new("ScreenGui")
 screenGui.Parent = playerGui
 
-local statusLabel = Instance.new("TextButton") 
+-- Main status label (draggable and clickable)
+local statusLabel = Instance.new("TextButton") -- Clickable button
 statusLabel.Parent = screenGui
 statusLabel.Size = UDim2.new(0, 200, 0, 50)
-statusLabel.Position = UDim2.new(0.5, -100, 0.1, 0) 
+statusLabel.Position = UDim2.new(0.5, -100, 0.1, 0) -- Centered at the top
 statusLabel.BackgroundTransparency = 0.2
 statusLabel.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 statusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 statusLabel.Font = Enum.Font.GothamBold
 statusLabel.TextSize = 24
 statusLabel.Text = "Bhop: OFF"
-statusLabel.Active = true 
-statusLabel.Draggable = true 
+statusLabel.Active = true -- Needed for dragging
+statusLabel.Draggable = true -- Allows dragging
 
 -- Credit label (parented to statusLabel)
 local creditLabel = Instance.new("TextLabel")
-creditLabel.Parent = statusLabel 
-creditLabel.Size = UDim2.new(1, 0, 0, 20) 
-creditLabel.Position = UDim2.new(0, 0, 1, 5) 
-creditLabel.BackgroundTransparency = 1 
+creditLabel.Parent = statusLabel -- Sticks to the main UI
+creditLabel.Size = UDim2.new(1, 0, 0, 20) -- Same width as statusLabel, smaller height
+creditLabel.Position = UDim2.new(0, 0, 1, 5) -- Right below statusLabel
+creditLabel.BackgroundTransparency = 1 -- Fully transparent background
 creditLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
 creditLabel.Font = Enum.Font.Gotham
-creditLabel.TextSize = 12 
+creditLabel.TextSize = 12 -- Adjusted font size
 creditLabel.Text = "Made by kevinivy100"
-creditLabel.TextScaled = true 
+creditLabel.TextScaled = true -- Ensures proper scaling
 
 -- Keybind indicator (non-draggable)
 local keybindLabel = Instance.new("TextLabel")
 keybindLabel.Parent = screenGui
 keybindLabel.Size = UDim2.new(0, 200, 0, 30)
-keybindLabel.Position = UDim2.new(0.5, -100, 0.9, 0) 
+keybindLabel.Position = UDim2.new(0.5, -100, 0.9, 0) -- Bottom center of the screen
 keybindLabel.BackgroundTransparency = 0.2
 keybindLabel.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
 keybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -53,7 +55,7 @@ local function autoJump()
         if autoJumpEnabled and humanoid then
             humanoid.Jump = true
         else
-            connection:Disconnect() 
+            connection:Disconnect() -- Stop jumping when disabled
         end
     end)
 end
